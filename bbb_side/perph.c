@@ -1,4 +1,4 @@
-#include "uart.h"
+#include "perph.h"
 
 int uartfd;
 
@@ -25,15 +25,39 @@ void init_uart()
     tcflush(uartfd, TCIFLUSH);
     tcsetattr(uartfd, TCSANOW, &options);
 
-    // TODO - MOVE TO WRITE FUNCTION
-    // Transmit data through UART
-    // const char *data = "Hello, World!\n";
-    // int bytes_written = write(uartfd, data, strlen(data));
-    // if (bytes_written > 0)
-    // {
-    //     printf("Transmitted %d bytes: %s\n", bytes_written, data);
-    // }
+}
 
-    // // Close UART port
-    // close(uartfd);
+int uart_tx()
+{
+    // Transmit data through UART
+    int bytes_written = write(uartfd, (gps_t *) &gps , sizeof(gps_t));
+    if (bytes_written <= 0)
+    {
+        perror("UART Transmit");
+        return ERROR;
+    }
+
+
+
+    return SUCCESS;
+}
+
+void uart_rx()
+{
+
+}
+
+void my_exit(int status)
+{
+    // Close UART port
+    close(uartfd);
+    if (status == ERROR)
+        exit(EXIT_FAILURE);
+    else if(status == SUCCESS)
+        exit(EXIT_SUCCESS);
+    else
+    {
+        printf("Unknown status.\n");
+        exit(EXIT_FAILURE);
+    }
 }

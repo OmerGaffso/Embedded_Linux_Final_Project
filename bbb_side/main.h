@@ -22,4 +22,7 @@ typedef struct gps_pack
 	uint8_t end_flag;
 }gps_t;
 
+/// GLOBAL VARIABLES:
+extern gps;
+
 #endif
