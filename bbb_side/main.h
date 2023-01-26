@@ -7,22 +7,14 @@
 #ifndef MY_MAIN_FILE_OP
 #define MY_MAIN_FILE_OP
 
-#include <inttypes.h>
+/// FUNCTIONS:
 
-/// DEFINITIONS:
-#define ERROR -1
-#define SUCCESS 1
-
-/// STRUCTS:
-typedef struct gps_pack
-{
-	uint32_t unique_id;
-	uint8_t coordinates;
-	uint8_t start_flag;
-	uint8_t end_flag;
-}gps_t;
-
-/// GLOBAL VARIABLES:
-extern gps;
+/**
+ * @brief This function will close all file descriptors that have been open during the program
+ * runtime, and use exit function based on the status received as parameter.
+ * 
+ * @param status - the status with which we got into this function.
+ */
+void my_exit(int status);
 
 #endif
