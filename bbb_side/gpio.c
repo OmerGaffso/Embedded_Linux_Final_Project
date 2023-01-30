@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 
@@ -43,24 +42,21 @@ int check_button()
         button_state = BUTTON_ON;
         /*
         button_cnt++;
-        print_release_flag = 0;
-        printf("%d. Button Pressed\n",button_cnt);
             TODO- DELETE, USED FOR DEBUGGING.
         */
+        printf("Button Pressed\n");
+        print_release_flag = 0;
         return BUTTON_ON;
     } 
     else if (state == BUTTON_OFF && button_state == BUTTON_ON) 
     {
         // Register the button release
         button_state = BUTTON_OFF;
-        /*
         if (print_release_flag == 0)
         {
-            printf("%d.Button Released.\n",button_cnt);
             print_release_flag = 1;
+            printf("Button Released\n");
         }
-            TODO- DELETE, USED FOR DEBUGGING.
-        */
         return BUTTON_OFF;
     }
     else 

@@ -10,11 +10,11 @@
 /// FUNCTIONS:
 
 /**
- * @brief This function will close all file descriptors that have been open during the program
- * runtime, and use exit function based on the status received as parameter.
- * 
- * @param status - the status with which we got into this function.
+ * @brief This function will read the operation assigned to the gps global variable, and send to 
+ * the server. If the end flag is on, reset the gps global variable.
  */
-void my_exit(int status);
+void op_read();
+
+void print_gps();
 
 #endif

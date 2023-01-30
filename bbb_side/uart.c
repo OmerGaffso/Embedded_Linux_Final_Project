@@ -7,14 +7,14 @@
 #include "uart.h"
 
 int uartfd;
-gps_t gps;
+gps_t gps = { 0 };
 
 void init_uart()
 {
     uartfd = ERROR;
     
     // Open UART port
-    uartfd = open("/dev/ttyS4", O_RDWR | O_NOCTTY | O_NDELAY);
+    uartfd = open("/dev/ttyS4", O_RDWR | O_NOCTTY );
     if (uartfd == ERROR)
     {
         perror("Failed to open UART device");
@@ -36,23 +36,57 @@ void init_uart()
 void uart_tx()
 {
     // Transmit data through UART
-    int bytes_written = write(uartfd, &gps , sizeof(gps_t));
-    if (bytes_written == ERROR)
-        perror("UART write error");
-    else if (bytes_written < sizeof(gps_t))
-        printf("Only %d bytes were transmitted instead of %d\n", bytes_written, sizeof(gps_t));
+    int bytes_written = 0;
+    int total_sent = 0;
+    do
+    {
+        bytes_written = write(uartfd, &gps , sizeof(gps_t));
+        if (bytes_written == ERROR)
+        {    
+            perror("UART write error");
+            exit(EXIT_FAILURE);
+        }    
+        total_sent += bytes_written;
+    } while (total_sent < sizeof(gps_t));
+    
+        printf("The message was sent\n");
+
 }
 
 void uart_rx()
 {
-    int bytes_read = read(uartfd, &gps, sizeof(gps_t));
-    if (bytes_read == ERROR) 
+    int bytes_read = 0;
+    int total_read = 0;
+    do
     {
-        perror("UART read error");
-    } 
-    else if (bytes_read < sizeof(gps_t)) 
+        bytes_read = read(uartfd, &gps, sizeof(gps_t));
+        if (bytes_read == ERROR)
+        {
+            perror("UART receive error");
+            exit(EXIT_FAILURE);
+        }
+        total_read += bytes_read;
+    } while (total_read < sizeof(gps_t));
+     
+    printf("The message was received\n");
+    
+}
+
+void close_uart()
+{
+    // Close UART port
+    if (uartfd)
     {
-        printf("Only %d bytes were read instead of %d\n", bytes_read, sizeof(gps_t));
-    } 
+        if(close(uartfd) < 0)
+            printf("Uart closed successfuly.\n");
+    }
+}
+
+void reset_gps_packet()
+{
+    gps.coordinates = 0;
+    gps.end_flag = 0;
+    gps.start_flag = 0;
+    gps.unique_id = 0;
 }
 

@@ -46,4 +46,15 @@ void uart_tx();
  */
 void uart_rx();
 
+/**
+ * @brief This function will set all fields of the global gps_t gps to 0.
+ */
+void reset_gps_packet();
+
+/**
+ * @brief This function will close all file descriptors that have been open during the program
+ * runtime, and use exit function based on the status received as parameter.
+ */
+void close_uart();
+
 #endif
