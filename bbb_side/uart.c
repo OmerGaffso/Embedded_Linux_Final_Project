@@ -1,3 +1,9 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <string.h>
+#include <stdlib.h>
 #include "uart.h"
 
 int uartfd;
@@ -34,9 +40,7 @@ void uart_tx()
     if (bytes_written == ERROR)
         perror("UART write error");
     else if (bytes_written < sizeof(gps_t))
-        printf("Only %d bytes were transmitted instead of %ld\n", bytes_written, sizeof(gps_t));
-        
-    return SUCCESS;
+        printf("Only %d bytes were transmitted instead of %d\n", bytes_written, sizeof(gps_t));
 }
 
 void uart_rx()
@@ -48,7 +52,7 @@ void uart_rx()
     } 
     else if (bytes_read < sizeof(gps_t)) 
     {
-        printf("Only %d bytes were read instead of %ld\n", bytes_read, sizeof(gps_t));
+        printf("Only %d bytes were read instead of %d\n", bytes_read, sizeof(gps_t));
     } 
 }
 

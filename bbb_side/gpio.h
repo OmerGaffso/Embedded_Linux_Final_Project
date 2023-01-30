@@ -8,11 +8,19 @@
 #ifndef MY_GPIO_FILE_OP
 #define MY_GPIO_FILE_OP
 
-#define OUTPUT_GPIO "60"
-#define INPUT_GPIO "50"
+#define INPUT_GPIO "67"             // Pin P8.08 on the bbb
+#define GPIO_BUFF_SIZE 64
+#define BUTTON_ON 1
+#define BUTTON_OFF 0
 
-void setup_output_gpio();
-void setup_input_gpio();
-void cleanup_gpio();
+extern int button_state;
+
+/**
+ * @brief this function read the input fd for simulated button value.
+ * 
+ * @return int 1 (BUTTON_ON) if the circuit is connected (button is pressed), 0 (BUTTON_OFF) if 
+ *                          the circuit is not connected (button is not pressed).
+ */
+int check_button();
 
 #endif

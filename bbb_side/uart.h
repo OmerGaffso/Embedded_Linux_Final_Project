@@ -8,15 +8,7 @@
 #ifndef MY_UART_FILE_OP
 #define MY_UART_FILE_OP
 
-
 /// INCLUDES:
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
-#include <string.h>
-#include <stdlib.h>
-#include "main.h"
 #include <inttypes.h>
 
 /// DEFINITIONS:
@@ -33,14 +25,13 @@ typedef struct gps_pack
 }gps_t;
 
 /// GLOBAL VARIABLES:
-extern uartfd;
-extern gps;
+extern int uartfd;
+extern gps_t gps;
 
 /// FUNCTIONS:
 /**
  * @brief This function will initialize the uart connection for the bbb. It will set all the options
  * and assign the uartfd file descriptor. 
- * 
  */
 void init_uart();
 

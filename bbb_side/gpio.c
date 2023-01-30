@@ -6,68 +6,55 @@
 
 #include "gpio.h"
 
-static int output_fd;
-static int input_fd;
+int button_state = BUTTON_OFF;
+int button_cnt = 0;
+int print_release_flag = 0;
 
-void setup_output_gpio() {
-    // Export the output GPIO
-    int fd = open("/sys/class/gpio/export", O_WRONLY);
-    if (fd < 0) {
-        perror("Failed to open export file");
+int check_button()
+{
+    char buf[GPIO_BUFF_SIZE] = { 0 };
+    int byte_read = 0;
+    int state = -1;
+
+    int value_fd = open("/sys/class/gpio/gpio67/value", O_RDONLY, 0666);
+    if (value_fd < 0)
+    {
+        perror("Failed to open value file");
         exit(EXIT_FAILURE);
     }
-    write(fd, OUTPUT_GPIO, strlen(OUTPUT_GPIO));
-    close(fd);
 
-    // Set the output GPIO as an output
-    char buf[64];
-    sprintf(buf, "/sys/class/gpio/gpio%s/direction", OUTPUT_GPIO);
-    output_fd = open(buf, O_WRONLY);
-    if (output_fd < 0) {
-        perror("Failed to open direction file");
+    byte_read = read(value_fd, buf, GPIO_BUFF_SIZE);
+    if (byte_read < 0)
+    {
+        perror("Value read error");
         exit(EXIT_FAILURE);
     }
-    write(output_fd, "out", 3);
-}
+    close(value_fd);
 
-void setup_input_gpio() {
-    // Export the input GPIO
-    int fd = open("/sys/class/gpio/export", O_WRONLY);
-    if (fd < 0) {
-        perror("Failed to open export file");
-        exit(EXIT_FAILURE);
+    printf("read %s from value file.\n", buf);
+    state = atoi(buf);
+    printf("state = %d\n", state);
+    printf("button state = %d\n", button_state);
+    if (state == BUTTON_ON && button_state == BUTTON_OFF) 
+    {
+        // Register the button press
+        button_state = BUTTON_ON;
+        button_cnt++;
+        print_release_flag = 0;
+        printf("%d. Button Pressed\n",button_cnt);
+        return BUTTON_ON;
+    } 
+    else if (state == BUTTON_OFF && button_state == BUTTON_ON) 
+    {
+        // Register the button release
+        button_state = BUTTON_OFF;
+        if (print_release_flag == 0)
+        {
+            printf("%d.Button Released.\n",button_cnt);
+            print_release_flag = 1;
+        }
+        return BUTTON_OFF;
     }
-    write(fd, INPUT_GPIO, strlen(INPUT_GPIO));
-    close(fd);
-
-    // Set the input GPIO as an input
-    char buf[64];
-    sprintf(buf, "/sys/class/gpio/gpio%s/direction", INPUT_GPIO);
-    input_fd = open(buf, O_RDONLY);
-    if (input_fd < 0) {
-        perror("Failed to open direction file");
-        exit(EXIT_FAILURE);
-    }
-    write(input_fd, "in", 2);
-
-    sprintf(buf, "/sys/class/gpio/gpio%s/pull", INPUT_GPIO);
-    int pull_fd = open(buf, O_WRONLY);
-    if (pull_fd < 0) {
-        perror("Failed to open pull file");
-        exit(EXIT_FAILURE);
-    }
-    write(pull_fd, "down", 4);
-    close(pull_fd);
-}
-
-void cleanup_gpio() {
-    // Clean up by unexporting the pins
-    int fd = open("/sys/class/gpio/unexport", O_WRONLY);
-    if (fd < 0) {
-        perror("Failed to open unexport file");
-        exit(EXIT_FAILURE);
-    }
-    write(fd, OUTPUT_GPIO, strlen(OUTPUT_GPIO));
-    write(fd, INPUT_GPIO, strlen(INPUT_GPIO));
-    close(fd);
+    else 
+        return BUTTON_OFF; 
 }
