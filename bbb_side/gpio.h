@@ -9,7 +9,7 @@
 #define MY_GPIO_FILE_OP
 
 #define INPUT_GPIO "67"             // Pin P8.08 on the bbb
-#define GPIO_BUFF_SIZE 64
+#define ASCII_CHAR_TO_DIGIT 48      // any digit char - 48 will equal to its value as int.
 #define BUTTON_ON 1
 #define BUTTON_OFF 0
 
